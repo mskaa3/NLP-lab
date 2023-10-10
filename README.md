@@ -7,4 +7,4 @@ Wraz z dynamicznym rozwojem mediów społecznościowych, gdzie anonimowość zna
 
 
 ## Wykorzystane źródła
-Wykorzystywane serwisy internetowe pozwalają użytkownikom na swobodne dodawanie informacji i postów w danych kategoriach (subredditach, tagach). [wykop.pl](https://wykop.pl/) jest polskim odpowiednikiem anglojęzycznego portalu [reddit.com](https://www.reddit.com/), który ma aktualnie około 170 mln zarejestrowanych użytkowników.
+Wykorzystywane serwisy internetowe pozwalają użytkownikom na swobodne dodawanie informacji i postów w danych kategoriach (subredditach, tagach), co pozwala na ewentualny podział i lepszą analizę danych. Portal [wykop.pl](https://wykop.pl/) jest polskim odpowiednikiem bardzo popularnego anglojęzycznego portalu [reddit.com](https://www.reddit.com/), który ma aktualnie około 170 mln zarejestrowanych użytkowników. Aby zapewnić większą róźnorodność danych zdecydowaliśmy się na wykorzystanie obu serwisów, przy czym dla serwisu reddit konieczne będzie odfiltrowanie postów w języku polskim. 
