@@ -7,8 +7,14 @@ Wraz z dynamicznym rozwojem mediów społecznościowych, gdzie anonimowość zna
 
 
 ## Wykorzystane źródła
-* [wykop.pl](https://wykop.pl/) 
-* [reddit.com](https://www.reddit.com/)
-* [youtube.com](https://www.youtube.com/)
+* Korpus wzorcowy i pełny:
+  * [reddit.com](https://www.reddit.com/) - Platforma społecznościowa, gdzie użytkownicy wspólnie tworzą i dzielą się treściami.  Ideą jest odnajdywanie interesujących informacji w Internecie i przedstawianie ich innym użytkownikom, a także komentowanie aktywności innych użytkowników. Aktualnie reddit posiada około 170 mln zarejestrowanych użytkowników. Strona ta jest podzielona na społeczności o nazwie subreddits, związane z różnymi zainteresowaniami, a każdy użytkownik ma możliwość założenia własnego subreddit. Zapewnia to szeroki zakres tematyczny tekstów a także róźnorodny przedział wiekowy czy grupę społeczną twórców, co będzie wpływać na styl wypowiedzi. Dodatkowo ze względu na charakterystykę serwisu zawiera on treści o charakterze informacyjnym jak i opinie i dyskusje, a dodatkowo posty będą zawierać słownictwo slangowe i potoczne. Ze względu na fakt, że jest to serwis angielskojęzyczny, koniecznym będzie odfiltrowanie postów w języku polskim. 
+    
+  * [wykop.pl](https://wykop.pl/) - Polski odpowiednik anglojęzycznego portalu reddit działający na tej samej zasadzie.
+    
+  * [youtube.com](https://www.youtube.com/) - Amerykański portal zapewniający darmową możliwość udostępniania, edytowania, transmitowania na żywo oraz komentowania filmów. Dane z serwisu Youtube powinny mieć nieco inną specyfikę niż dwa poprzednie źródła, ze względu na fakt, że nie jest to platforma 'dyskusyjna', a posty użytkowników są w znacznej większości bezpośrednimi opiniami dotyczącymi danego contentu.
+    
+* Korpus pełny:
+  * [wikipedia.org](https://pl.wikipedia.org/wiki/) - Encyklopedia internetowa obsługująca wiele języków i działająca na zasadzie otwartej treści. Edytować i dodawać nowe treści może każdy użytkownik, a treści są następnie weryfikowane przez grupę innych, sprawdzonych użytkowników. W języku polskim zawiera ona ponad 740 tysięcy haseł a korzystanie z niej jest całkowicie darmowe. Dzięki temu zawarte w niej teksty będą zawierały bogate słownictwo w bardzo szerokim zakresie tematycznym, a także bardziej poprawne kontrukcje gramatyczne i budowe zdań niż zwykłe serwisy społecznościowe, co z kolei pozwoli modelowi na lepsze wyuczenie się schematów języka.
 
-Wykorzystywane serwisy internetowe pozwalają użytkownikom na swobodne dodawanie informacji i postów. Portal wykop.pl jest polskim odpowiednikiem bardzo popularnego anglojęzycznego portalu reddit.com, który ma aktualnie około 170 mln zarejestrowanych użytkowników. Aby zapewnić większą ilość oraz róźnorodność danych zdecydowaliśmy się na wykorzystanie obu serwisów, przy czym dla serwisu reddit konieczne będzie odfiltrowanie postów w języku polskim. Dodatkowo, wykorzytane zostaną także dane z serwisu Youtube, które powinny mieć nieco inną specyfikę niż dwa pozostałe źródła, ze względu na fakt, że nie jest to platforma 'dyskusyjna', a posty użytkowników z reguły są bezpośrednimi opiniami dotyczącymi danego contentu.  Taki wybór pozwala na zgromadzenie danych dotyczących różnych grup społecznych, wiekowych, tekstów z różnych kategorii (oznaczenia tematyczne, tagi) i dotyczących różnych tematów. 
+
