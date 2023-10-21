@@ -71,18 +71,18 @@ def get_extract_wikidump(wikidump: str):
                 wikidump (str): adress of a wikidump.bz2 file in a following form:
         https://dumps.wikimedia.org/plwiki/20231020/plwiki-20231020-pages-articles-multistream.xml.bz2"
     """
-    isExist = os.path.exists(os.path.join(SCRIPTS_PATH, "wikiextractor"))
-    print("Downloading wikidump, it might take a while...")
+    
+    
 
-    bzip_file = req.get(wikidump)
-    progress_bar.update(1)
     DUMP_NAME = wikidump.split("/")[-1]
-
-    with open(DATA_PATH + "/" + DUMP_NAME, "wb") as f:
-        f.write(bzip_file.content)
-
+    isExist = os.path.exists(DATA_PATH + "/" + DUMP_NAME)
+    if not isExist:
+        bzip_file = req.get(wikidump)
+        with open(DATA_PATH + "/" + DUMP_NAME, "wb") as f:
+            
+            f.write(bzip_file.content)
+    isExist = os.path.exists(os.path.join(SCRIPTS_PATH, "wikiextractor"))
     if isExist:
-        with tqdm(desc="Extracting wikidump", total=1) as progress_bar:
             run_stat = subprocess.run(
                 [
                     "python",
@@ -100,7 +100,6 @@ def get_extract_wikidump(wikidump: str):
                     str(DATA_PATH + "/" + DUMP_NAME),
                 ]
             )
-            progress_bar.update(1)
     else:
         print("Wikiextractor not found in the directory")
 
@@ -108,13 +107,7 @@ def get_extract_wikidump(wikidump: str):
 def convert_files():
     """Read files from extracted wikidump and converts it to txt files named articleid_articletitle with matching metadata json file"""
 
-    for files in tqdm(
-        os.listdir(EXTRACTED_PATH),
-        desc="Converting extracted wikidumps",
-        total=1,
-        unit="file",
-        total=len(os.listdir(EXTRACTED_PATH)),
-    ):
+    for files in os.listdir(EXTRACTED_PATH):
         file = os.path.join(EXTRACTED_PATH, files)
         for f in os.listdir(file):
             full_file_path = os.path.join(file, f)
