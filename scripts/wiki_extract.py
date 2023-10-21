@@ -4,12 +4,13 @@ import os
 import re
 import subprocess
 
-import git
-import jsonlines
 import requests as req
 from tqdm import tqdm
 
+import git
+import jsonlines
 from const import DATA_PATH, EXTRACTED_PATH, RESULT_PATH, SCRIPTS_PATH
+
 
 def create_files():
     """Create files for storing data extracted from wikidump and final converted data"""
@@ -42,7 +43,9 @@ def get_wikiextractor():
                 "https://github.com/attardi/wikiextractor.git"
             )
 
-            with open(SCRIPTS_PATH + "/wikiextractor/wikiextractor/WikiExtractor.py") as f:
+            with open(
+                SCRIPTS_PATH + "/wikiextractor/wikiextractor/WikiExtractor.py"
+            ) as f:
                 lines = f.readlines()
 
             with open(
@@ -66,18 +69,18 @@ def get_extract_wikidump(wikidump: str):
     Parameters:
         ----------
                 wikidump (str): adress of a wikidump.bz2 file in a following form:
-        https://dumps.wikimedia.org/csbwiki/20230301/csbwiki-20230301-pages-articles-multistream.xml.bz2"
+        https://dumps.wikimedia.org/plwiki/20231020/plwiki-20231020-pages-articles-multistream.xml.bz2"
     """
     isExist = os.path.exists(os.path.join(SCRIPTS_PATH, "wikiextractor"))
     print("Downloading wikidump, it might take a while...")
-    
+
     bzip_file = req.get(wikidump)
     progress_bar.update(1)
     DUMP_NAME = wikidump.split("/")[-1]
-    
+
     with open(DATA_PATH + "/" + DUMP_NAME, "wb") as f:
         f.write(bzip_file.content)
-    
+
     if isExist:
         with tqdm(desc="Extracting wikidump", total=1) as progress_bar:
             run_stat = subprocess.run(
@@ -104,51 +107,54 @@ def get_extract_wikidump(wikidump: str):
 
 def convert_files():
     """Read files from extracted wikidump and converts it to txt files named articleid_articletitle with matching metadata json file"""
-   
-    for files in tqdm(os.listdir(EXTRACTED_PATH),
-        desc="Converting extracted wikidumps", total=1, unit="file",total=len(os.listdir(EXTRACTED_PATH))
-    ) :
-            file = os.path.join(EXTRACTED_PATH, files)
-            for f in os.listdir(file):
-                full_file_path = os.path.join(file, f)
-                with jsonlines.open(full_file_path) as fp:
-                    for line in fp:
-                        id = line["id"]
-                        content = line["text"]
-                        url = line["url"]
-                        revid = line["revid"]
-                        original_title = line["title"]
-                        corrected_title = original_title.replace("/", "_")
-                        corrected_title = re.sub(
-                            r"[-()\"#/@;:<>{}`+=~|.!?,]", "_", original_title
-                        )
-                        with open(
-                            RESULT_PATH + "/" + id + "_" + corrected_title,
-                            "w",
-                            encoding="utf8",
-                        ) as new:
-                            new.write(original_title)
-                            new.write("\n")
-                            new.write(content)
 
-                        with open(
-                            RESULT_PATH
-                            + "/"
-                            + id
-                            + "_"
-                            + corrected_title
-                            + "_metadata.json",
-                            "w",
-                        ) as outfile:
-                            metadata = {
-                                "id": id,
-                                "url": url,
-                                "title": original_title,
-                                "revid": revid,
-                                "source": f,
-                            }
-                            json.dump(metadata, outfile)
-          
+    for files in tqdm(
+        os.listdir(EXTRACTED_PATH),
+        desc="Converting extracted wikidumps",
+        total=1,
+        unit="file",
+        total=len(os.listdir(EXTRACTED_PATH)),
+    ):
+        file = os.path.join(EXTRACTED_PATH, files)
+        for f in os.listdir(file):
+            full_file_path = os.path.join(file, f)
+            with jsonlines.open(full_file_path) as fp:
+                for line in fp:
+                    id = line["id"]
+                    content = line["text"]
+                    url = line["url"]
+                    revid = line["revid"]
+                    original_title = line["title"]
+                    corrected_title = original_title.replace("/", "_")
+                    corrected_title = re.sub(
+                        r"[-()\"#/@;:<>{}`+=~|.!?,]", "_", original_title
+                    )
+                    with open(
+                        RESULT_PATH + "/" + id + "_" + corrected_title,
+                        "w",
+                        encoding="utf8",
+                    ) as new:
+                        new.write(original_title)
+                        new.write("\n")
+                        new.write(content)
+
+                    with open(
+                        RESULT_PATH
+                        + "/"
+                        + id
+                        + "_"
+                        + corrected_title
+                        + "_metadata.json",
+                        "w",
+                    ) as outfile:
+                        metadata = {
+                            "id": id,
+                            "url": url,
+                            "title": original_title,
+                            "revid": revid,
+                            "source": f,
+                        }
+                        json.dump(metadata, outfile)
 
 
 if __name__ == "__main__":
