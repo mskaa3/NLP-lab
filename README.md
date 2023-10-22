@@ -17,4 +17,4 @@ Wraz z dynamicznym rozwojem mediów społecznościowych, gdzie anonimowość zna
 * Korpus pełny:
   * [wikipedia.org](https://pl.wikipedia.org/wiki/) - Encyklopedia internetowa obsługująca wiele języków i działająca na zasadzie otwartej treści. Edytować i dodawać nowe treści może każdy użytkownik, a treści są następnie weryfikowane przez grupę innych, sprawdzonych użytkowników. W języku polskim zawiera ona ponad 740 tysięcy haseł a korzystanie z niej jest całkowicie darmowe. Dzięki temu zawarte w niej teksty będą zawierały bogate słownictwo w bardzo szerokim zakresie tematycznym, a także bardziej poprawne kontrukcje gramatyczne i budowe zdań niż zwykłe serwisy społecznościowe, co z kolei pozwoli modelowi na lepsze wyuczenie się schematów języka.
 
-
+[RAW DANE POBRANE ZE ŹRÓDEL](https://drive.google.com/drive/folders/1XNp3cTFvuWA6bxP8FMDoa3MIWyAAilvj?usp=sharing)
