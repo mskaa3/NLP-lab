@@ -19,3 +19,6 @@ tqdm
 black
 isort
 beautifulsoup4
+praw
+pandas
+configparser
