@@ -8,6 +8,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+
 def scrape_keywords(df, keywords=None):
     if keywords is None:
         keywords = [
@@ -24,6 +25,12 @@ def scrape_keywords(df, keywords=None):
             "Inflacja",
             "Gospodarka",
             "Prawo i Sprawiedliwość",
+            "Lewica",
+            "CPK",
+            "referendum",
+            "głosowanie",
+            "PSL",
+            "aborcja",
         ]
     for subreddit in tqdm(subreddit_array, desc="Subreddits"):
         for keyword in tqdm(keywords, desc="Keywords", leave=False):
@@ -72,10 +79,10 @@ def scrape_keywords(df, keywords=None):
     return df
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read("../config.ini")
-    
+
     client_id = config["reddit"]["client_id"]
     secret_key = config["reddit"]["secret_key"]
     pw = config["reddit"]["pw"]
@@ -95,7 +102,7 @@ if __name__ == '__main__':
         reddit.subreddit("Polska"),
         reddit.subreddit("ShitKonfaSays"),
     ]
-    
+
     keywords = [
         "Platforma Obywatelska",
         "Koalicja Obywatelska",
@@ -135,4 +142,3 @@ if __name__ == '__main__':
         "../data/redditScrapped.json", orient="records", force_ascii=False, indent=4
     )
     # df.to_feather("../data/redditScrapped.feather")
-    
