@@ -5,7 +5,6 @@ from datetime import datetime
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
 from const import DATA_PATH, DATE, NUM_PAGES, WYKOP_URL
 
@@ -92,7 +91,6 @@ for tag in tags:
 
                 except:
                     pass
-
 
 df = pd.DataFrame(data)
 df.to_csv(os.path.join(DATA_PATH, f"wykop_data_{NUM_PAGES}_pages.csv"))

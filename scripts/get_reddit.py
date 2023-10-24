@@ -1,10 +1,11 @@
-from prawcore import TooManyRequests
-import time
-import praw
 import configparser
-import pandas as pd
-from tqdm.auto import tqdm
+import time
 import warnings
+
+import pandas as pd
+import praw
+from prawcore import TooManyRequests
+from tqdm.auto import tqdm
 
 warnings.filterwarnings("ignore")
 

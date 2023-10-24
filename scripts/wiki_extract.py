@@ -4,11 +4,11 @@ import os
 import re
 import subprocess
 
+import git
+import jsonlines
 import requests as req
 from tqdm import tqdm
 
-import git
-import jsonlines
 from const import DATA_PATH, EXTRACTED_PATH, RESULT_PATH, SCRIPTS_PATH
 
 
@@ -71,35 +71,32 @@ def get_extract_wikidump(wikidump: str):
                 wikidump (str): adress of a wikidump.bz2 file in a following form:
         https://dumps.wikimedia.org/plwiki/20231020/plwiki-20231020-pages-articles-multistream.xml.bz2"
     """
-    
-    
 
     DUMP_NAME = wikidump.split("/")[-1]
     isExist = os.path.exists(DATA_PATH + "/" + DUMP_NAME)
     if not isExist:
         bzip_file = req.get(wikidump)
         with open(DATA_PATH + "/" + DUMP_NAME, "wb") as f:
-            
             f.write(bzip_file.content)
     isExist = os.path.exists(os.path.join(SCRIPTS_PATH, "wikiextractor"))
     if isExist:
-            run_stat = subprocess.run(
-                [
-                    "python",
-                    # File to run
-                    str(
-                        SCRIPTS_PATH
-                        + "/wikiextractor/wikiextractor/WikiExtractorCorrected.py"
-                    ),
-                    # Processing parameters to get as json
-                    "--json",
-                    # Directory to store Extracted text
-                    "-o",
-                    str(EXTRACTED_PATH),
-                    # Archive file to extract from
-                    str(DATA_PATH + "/" + DUMP_NAME),
-                ]
-            )
+        run_stat = subprocess.run(
+            [
+                "python",
+                # File to run
+                str(
+                    SCRIPTS_PATH
+                    + "/wikiextractor/wikiextractor/WikiExtractorCorrected.py"
+                ),
+                # Processing parameters to get as json
+                "--json",
+                # Directory to store Extracted text
+                "-o",
+                str(EXTRACTED_PATH),
+                # Archive file to extract from
+                str(DATA_PATH + "/" + DUMP_NAME),
+            ]
+        )
     else:
         print("Wikiextractor not found in the directory")
 
