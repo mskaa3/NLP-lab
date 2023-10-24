@@ -1,4 +1,6 @@
 import configparser
+import json
+import os.path
 import time
 import warnings
 
@@ -7,103 +9,90 @@ import praw
 from prawcore import TooManyRequests
 from tqdm.auto import tqdm
 
+import const
+
 warnings.filterwarnings("ignore")
 
 
-def scrape_keywords(df, keywords=None):
-    if keywords is None:
-        keywords = [
-            "Platforma Obywatelska",
-            "Koalicja Obywatelska",
-            "Morawiecki",
-            "Kaczyński",
-            "Mentzen",
-            "Tusk",
-            "Wybory",
-            "Wybory 2023",
-            "Konfederacja",
-            "Trzecia Droga",
-            "Inflacja",
-            "Gospodarka",
-            "Prawo i Sprawiedliwość",
-            "Lewica",
-            "CPK",
-            "referendum",
-            "głosowanie",
-            "PSL",
-            "aborcja",
-        ]
-    for subreddit in tqdm(subreddit_array, desc="Subreddits"):
+def scrape_subreddits_by_keywords(
+    df_scraped: pd.DataFrame, subreddits: list, keywords: list[str]
+) -> pd.DataFrame:
+    for subreddit in tqdm(subreddits, desc="Subreddits"):
         for keyword in tqdm(keywords, desc="Keywords", leave=False):
             while True:
                 try:
                     for submission in subreddit.search(keyword, sort="hot"):
-                        try:
-                            submission.comments.replace_more(limit=None)
-                            commenters_id = [
-                                [
-                                    comment.author.name
-                                    for comment in submission.comments.list()
-                                    if comment.author is not None
-                                ]
-                            ]
-                            date = pd.to_datetime(submission.created_utc, unit="s")
-                            df = pd.concat(
-                                [
-                                    df,
-                                    pd.DataFrame(
+                        post_id = submission.id
+                        title = submission.title
+                        text = submission.selftext
+                        subreddit_title = submission.subreddit.title
+
+                        df_scraped = pd.concat(
+                            [
+                                df_scraped,
+                                pd.DataFrame(
+                                    [
                                         {
-                                            "subreddit": [subreddit.display_name],
-                                            "title": submission.title,
-                                            "selftext": submission.selftext,
-                                            "author_name": submission.author.name,
-                                            "upvote_ratio": submission.upvote_ratio,
-                                            "ups": submission.ups,
-                                            "downs": submission.downs,
-                                            "score": submission.score,
-                                            "date": date,
-                                            "post_id": submission.id,
-                                            "num_comments": submission.num_comments,
+                                            "post_id": post_id,
+                                            "title": title,
+                                            "text": text,
+                                            "subreddit_title": subreddit_title,
                                             "keyword": keyword,
-                                            "commenters_id": commenters_id,
                                         }
-                                    ),
-                                ],
-                                ignore_index=True,
-                            )
-                        except AttributeError as e:
-                            print(f"{e}, author field not present")
+                                    ]
+                                ),
+                            ],
+                            ignore_index=True,
+                        )
                     break
-                except TooManyRequests as tmre:
+                except TooManyRequests:
+                    print("Too many requests. Waiting for a minute...")
                     time.sleep(60)
-                    print("waiting")
-    return df
+    return df_scraped
 
 
 if __name__ == "__main__":
-    config = configparser.ConfigParser()
-    config.read("../config.ini")
+    if os.path.exists("config.ini"):
+        config = configparser.ConfigParser()
+        config.read("config.ini")
 
-    client_id = config["reddit"]["client_id"]
-    secret_key = config["reddit"]["secret_key"]
-    pw = config["reddit"]["pw"]
+        client_id = config["reddit"]["client_id"]
+        secret_key = config["reddit"]["secret_key"]
+        pw = config["reddit"]["pw"]
 
-    reddit = praw.Reddit(
-        client_id=client_id,
-        client_secret=secret_key,
-        password=pw,
-        user_agent="MyAPI/0.0.1",
-        username="repcak2000",
-    )
+        reddit = praw.Reddit(
+            client_id=client_id,
+            client_secret=secret_key,
+            password=pw,
+            user_agent="MyAPI/0.0.1",
+            username="repcak2000",
+        )
+    elif os.path.exists("credentials.json"):
+        with open("credentials.json", "r") as json_file:
+            credentials = json.load(json_file)
 
+        client_id = credentials["client_id"]
+        client_secret = credentials["client_secret"]
+        user_agent = credentials["user_agent"]
+
+        reddit = praw.Reddit(
+            client_id=client_id,
+            client_secret=client_secret,
+            user_agent=user_agent,
+        )
+    else:
+        raise ValueError("Please provide credentials to Reddit API in root directory")
+
+    # every active Polish politics related subreddits
     subreddit_array = [
+        reddit.subreddit("Polska"),
+        reddit.subreddit("PolskaPolityka"),
         reddit.subreddit("lewica"),
         reddit.subreddit("libek"),
-        reddit.subreddit("PolskaPolityka"),
-        reddit.subreddit("Polska"),
         reddit.subreddit("ShitKonfaSays"),
     ]
 
+    # common political topics
     keywords = [
         "Platforma Obywatelska",
         "Koalicja Obywatelska",
@@ -111,8 +100,13 @@ if __name__ == "__main__":
         "Kaczyński",
         "Mentzen",
         "Tusk",
+        "Hołownia",
+        "Kukiz",
         "Wybory",
         "Wybory 2023",
+        "Referendum",
+        "CPK",
+        "Aborcja",
         "Konfederacja",
         "Trzecia Droga",
         "Inflacja",
@@ -120,26 +114,35 @@ if __name__ == "__main__":
         "Prawo i Sprawiedliwość",
     ]
 
-    df = pd.DataFrame(
-        columns=[
-            "subreddit",
-            "title",
-            "selftext",
-            "author_name",
-            "upvote_ratio",
-            "ups",
-            "downs",
-            "score",
-            "date",
-            "post_id",
-            "num_comments",
-            "likes",
-            "commenters_id",
-        ]
+    reddit_scrapped_file_path = os.path.join(const.DATA_PATH, "reddit_scraped.feather")
+    if not os.path.exists(reddit_scrapped_file_path):
+        print(f"Creating {reddit_scrapped_file_path}")
+        df = pd.DataFrame(
+            columns=["post_id", "title", "text", "subreddit_title", "keyword"]
+        )
+    else:
+        print(
+            f"File {reddit_scrapped_file_path} already exists. New posts are going to be appended"
+        )
+        df = pd.read_feather(reddit_scrapped_file_path)
+
+    length_before_scraping = len(df)
+
+    df = scrape_subreddits_by_keywords(
+        df_scraped=df, subreddits=subreddit_array, keywords=keywords
     )
-    df = scrape_keywords(df)
+    length_after_scraping = len(df)
+
     df = df.drop_duplicates(subset="post_id").reset_index(drop=True)
-    df.to_json(
-        "../data/redditScrapped.json", orient="records", force_ascii=False, indent=4
+    length_after_dropping_duplicates = len(df)
+
+    print(
+        f"Dataset size changed from {length_before_scraping} to {length_after_dropping_duplicates}"
     )
-    # df.to_feather("../data/redditScrapped.feather")
+    print(
+        f"Downloaded {length_after_scraping-length_before_scraping} out of which {length_after_scraping-length_after_dropping_duplicates} were already duplicates"
+    )
+
+    df.to_feather(
+        os.path.join(const.DATA_PATH, "reddit_scraped.feather"),
+    )
