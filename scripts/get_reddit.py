@@ -114,7 +114,7 @@ if __name__ == "__main__":
         "Prawo i Sprawiedliwość",
     ]
 
-    reddit_scrapped_file_path = os.path.join(const.DATA_PATH, "reddit_scraped.feather")
+    reddit_scrapped_file_path = os.path.join(const.DATA_PATH, "reddit_scraped.json")
     if not os.path.exists(reddit_scrapped_file_path):
         print(f"Creating {reddit_scrapped_file_path}")
         df = pd.DataFrame(
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         print(
             f"File {reddit_scrapped_file_path} already exists. New posts are going to be appended"
         )
-        df = pd.read_feather(reddit_scrapped_file_path)
+        df = pd.read_json(reddit_scrapped_file_path)
 
     length_before_scraping = len(df)
 
@@ -143,6 +143,4 @@ if __name__ == "__main__":
         f"Downloaded {length_after_scraping-length_before_scraping} out of which {length_after_scraping-length_after_dropping_duplicates} were already duplicates"
     )
 
-    df.to_feather(
-        os.path.join(const.DATA_PATH, "reddit_scraped.feather"),
-    )
+    df.to_json(reddit_scrapped_file_path, orient="records", indent=4, force_ascii=False)
