@@ -14,40 +14,41 @@ import const
 warnings.filterwarnings("ignore")
 
 
-def scrape_subreddits_by_keywords(
-    df_scraped: pd.DataFrame, subreddits: list, keywords: list[str]
-) -> pd.DataFrame:
-    for subreddit in tqdm(subreddits, desc="Subreddits"):
-        for keyword in tqdm(keywords, desc="Keywords", leave=False):
-            while True:
-                try:
-                    for submission in subreddit.search(keyword, sort="hot"):
-                        post_id = submission.id
-                        title = submission.title
-                        text = submission.selftext
-                        subreddit_title = submission.subreddit.title
+def scrape_subreddits(df_scraped: pd.DataFrame, subreddits: list) -> pd.DataFrame:
+    for subreddit in tqdm(subreddits, desc="Subreddits", unit="subreddit"):
+        while True:
+            try:
+                for submission in tqdm(
+                    subreddit.hot(limit=None),
+                    desc=f"Posts from r/{subreddit.title}",
+                    unit="post",
+                    leave=False,
+                ):
+                    post_id = submission.id
+                    title = submission.title
+                    text = submission.selftext
+                    subreddit_title = submission.subreddit.title
 
-                        df_scraped = pd.concat(
-                            [
-                                df_scraped,
-                                pd.DataFrame(
-                                    [
-                                        {
-                                            "post_id": post_id,
-                                            "title": title,
-                                            "text": text,
-                                            "subreddit_title": subreddit_title,
-                                            "keyword": keyword,
-                                        }
-                                    ]
-                                ),
-                            ],
-                            ignore_index=True,
-                        )
-                    break
-                except TooManyRequests:
-                    print("Too many requests. Waiting for a minute...")
-                    time.sleep(60)
+                    df_scraped = pd.concat(
+                        [
+                            df_scraped,
+                            pd.DataFrame(
+                                [
+                                    {
+                                        "post_id": post_id,
+                                        "title": title,
+                                        "text": text,
+                                        "subreddit_title": subreddit_title,
+                                    }
+                                ]
+                            ),
+                        ],
+                        ignore_index=True,
+                    )
+                break
+            except TooManyRequests:
+                print("Too many requests. Waiting for a minute...")
+                time.sleep(60)
     return df_scraped
 
 
@@ -83,43 +84,51 @@ if __name__ == "__main__":
     else:
         raise ValueError("Please provide credentials to Reddit API in root directory")
 
-    # every active Polish politics related subreddits
+    # https://www.reddit.com/r/Polska/wiki/subreddity/
     subreddit_array = [
-        reddit.subreddit("Polska"),
-        reddit.subreddit("PolskaPolityka"),
-        reddit.subreddit("lewica"),
-        reddit.subreddit("libek"),
-        reddit.subreddit("ShitKonfaSays"),
-    ]
-
-    # common political topics
-    keywords = [
-        "Platforma Obywatelska",
-        "Koalicja Obywatelska",
-        "Morawiecki",
-        "Kaczyński",
-        "Mentzen",
-        "Tusk",
-        "Hołownia",
-        "Kukiz",
-        "Wybory",
-        "Wybory 2023",
-        "Referendum",
-        "CPK",
-        "Aborcja",
-        "Konfederacja",
-        "Trzecia Droga",
-        "Inflacja",
-        "Gospodarka",
-        "Prawo i Sprawiedliwość",
+        # politics
+        # reddit.subreddit("PolskaPolityka"),
+        # reddit.subreddit("lewica"),
+        # reddit.subreddit("libek"),
+        # reddit.subreddit("ShitKonfaSays"),
+        # places
+        # reddit.subreddit("Polska"),
+        reddit.subreddit("Bydgoszcz"),
+        reddit.subreddit("Gdansk"),
+        reddit.subreddit("Krakow"),
+        reddit.subreddit("Lodz"),
+        reddit.subreddit("Poznan"),
+        reddit.subreddit("Szczecin"),
+        reddit.subreddit("Trojmiasto"),
+        reddit.subreddit("Warsaw"),
+        reddit.subreddit("Wroclaw"),
+        reddit.subreddit("Lublin"),
+        # communities
+        reddit.subreddit("Antyklerykalizm"),
+        reddit.subreddit("FashionRepsPolska"),
+        reddit.subreddit("fembojs"),
+        reddit.subreddit("niechjada"),
+        reddit.subreddit("PLr4r"),
+        reddit.subreddit("Polonia"),
+        reddit.subreddit("TeczowaPolska"),
+        reddit.subreddit("filozofia"),
+        reddit.subreddit("KomentarzeZWypoku"),
+        # games, series, literature
+        reddit.subreddit("DnDPolska"),
+        reddit.subreddit("MinecraftPolska"),
+        reddit.subreddit("RPGPolska"),
+        reddit.subreddit("wiedzmin"),
+        # memes
+        reddit.subreddit("2137"),
+        reddit.subreddit("polishfunny"),
+        reddit.subreddit("The_Donek"),
+        reddit.subreddit("TVGRYpl"),
     ]
 
     reddit_scrapped_file_path = os.path.join(const.DATA_PATH, "reddit_scraped.json")
     if not os.path.exists(reddit_scrapped_file_path):
         print(f"Creating {reddit_scrapped_file_path}")
-        df = pd.DataFrame(
-            columns=["post_id", "title", "text", "subreddit_title", "keyword"]
-        )
+        df = pd.DataFrame(columns=["post_id", "title", "text", "subreddit_title"])
     else:
         print(
             f"File {reddit_scrapped_file_path} already exists. New posts are going to be appended"
@@ -128,9 +137,7 @@ if __name__ == "__main__":
 
     length_before_scraping = len(df)
 
-    df = scrape_subreddits_by_keywords(
-        df_scraped=df, subreddits=subreddit_array, keywords=keywords
-    )
+    df = scrape_subreddits(df_scraped=df, subreddits=subreddit_array)
     length_after_scraping = len(df)
 
     df = df.drop_duplicates(subset="post_id").reset_index(drop=True)
