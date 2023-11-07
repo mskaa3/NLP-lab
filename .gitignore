@@ -163,6 +163,9 @@ cython_debug/
 data/
 	!data/.gitkeep
 
+raw_data/
+	!raw_data/.gitkeep
+
 scripts/wikiextractor/
 
 # credentials
