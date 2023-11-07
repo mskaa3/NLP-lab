@@ -8,9 +8,8 @@ lub dyskryminacji. Obecnie spora część ludzkiego życia, szczególnie młodzi
 nienawiści stwarza realne zagrożenie dla zdrowia psychicznego i społecznego. W związku z tym konieczne jest
 opracowywanie metod, które z dużą skutecznością zidentyfikują podobne zachowania i umożliwią platformom społecznościowym
 na ich usunięcie, a także 'ukaranie' potencjalnie szkodliwych użytkowników. Aktualne metody analizy języka naturalnego i
-sztucznej inteligencji pozwalają na klasyfikowanie tekstów i komentarzy pod kątem zawierania negatywnych treści na
-podstawie między innymi zawartych słów oraz ich kontekstu. Aby zbudować narzędzie, które pozwoli na skuteczne
-rozróżnienie tekstów 'nieszkodliwych' od tych zawierające szkodliwe treści, należy zgromadzić reprezentatywną próbkę
+sztucznej inteligencji pozwalają na klasyfikowanie tekstów i komentarzy pod kątem mowy nienawiści na
+podstawie między innymi zawartych słów oraz ich kontekstu. Aby zbudować takie narzędzie, należy zgromadzić reprezentatywną próbkę
 danych pochodzących z wybranych źródeł, które zobrazują występujący problem.
 
 ## Wykorzystane źródła
@@ -25,14 +24,17 @@ danych pochodzących z wybranych źródeł, które zobrazują występujący prob
       względu na charakterystykę serwisu zawiera on treści o charakterze informacyjnym jak i opinie i dyskusje, a
       dodatkowo posty będą zawierać słownictwo slangowe i potoczne. Ze względu na fakt, że jest to serwis
       angielskojęzyczny, koniecznym będzie odfiltrowanie postów w języku polskim.
+      * dane dostępne pod licencją **[Reddit License](https://www.redditinc.com/policies/developer-terms#text-content2)**:
 
     * [wykop.pl](https://wykop.pl/) - Polski odpowiednik anglojęzycznego portalu reddit działający na tej samej
       zasadzie.
+      * dane dostępne bez licencji, wyłącznie wymagane umieszczenie **[logo Wykopu](https://wykop.pl/static/logo.zip)**
 
     * [youtube.com](https://www.youtube.com/) - Amerykański portal zapewniający darmową możliwość udostępniania,
       edytowania, transmitowania na żywo oraz komentowania filmów. Dane z serwisu Youtube powinny mieć nieco inną
       specyfikę niż dwa poprzednie źródła, ze względu na fakt, że nie jest to platforma 'dyskusyjna', a posty
       użytkowników są w znacznej większości bezpośrednimi opiniami dotyczącymi danego contentu.
+      * dane dostępne pod warunkiem spełnienia **[warunków umowy YouTube](https://developers.google.com/youtube/terms/api-services-terms-of-service)**
 
 * Korpus pełny:
     * [wikipedia.org](https://pl.wikipedia.org/wiki/) - Encyklopedia internetowa obsługująca wiele języków i działająca
@@ -41,5 +43,6 @@ danych pochodzących z wybranych źródeł, które zobrazują występujący prob
       korzystanie z niej jest całkowicie darmowe. Dzięki temu zawarte w niej teksty będą zawierały bogate słownictwo w
       bardzo szerokim zakresie tematycznym, a także bardziej poprawne kontrukcje gramatyczne i budowe zdań niż zwykłe
       serwisy społecznościowe, co z kolei pozwoli modelowi na lepsze wyuczenie się schematów języka.
+      * dane dostępne pod licencją **[CC BY-SA](https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use)**
 
 [RAW DANE POBRANE ZE ŹRÓDEL](https://drive.google.com/drive/folders/1XNp3cTFvuWA6bxP8FMDoa3MIWyAAilvj?usp=sharing)
