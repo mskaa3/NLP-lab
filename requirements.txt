@@ -13,6 +13,8 @@ idna==3.4
 ipywidgets==8.1.1
 isort==5.12.0
 jsonlines==4.0.0
+kaleido==0.2.1
+lfs==0.2
 matplotlib==3.8.1
 notebook==7.0.6
 pandas==2.1.2
@@ -27,7 +29,6 @@ setuptools==68.2.2
 six==1.16.0
 smmap==5.0.1
 transformers==4.35.0
-lfs
 tqdm==4.66.1
 urllib3==2.0.7
 wheel==0.41.3
