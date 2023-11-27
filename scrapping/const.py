@@ -4,7 +4,7 @@ from datetime import datetime
 # general
 DIRECTORY = os.getcwd()
 DATA_PATH = os.path.join(DIRECTORY, "data")
-SCRIPTS_PATH = os.path.join(DIRECTORY, "scripts")
+SCRIPTS_PATH = os.path.join(DIRECTORY, "scrapping")
 
 # wikipedia
 EXTRACTED_PATH = os.path.join(DATA_PATH, "extracted_wikidumps")
