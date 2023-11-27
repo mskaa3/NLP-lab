@@ -166,7 +166,7 @@ data/
 raw_data/
 	!raw_data/.gitkeep
 
-scripts/wikiextractor/
+scrapping/wikiextractor/
 
 # credentials
 config.ini
